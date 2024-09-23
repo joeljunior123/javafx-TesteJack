@@ -13,5 +13,13 @@ public class WithdrawService {
     public List<Withdraw> findAll(){
         return dao.findAll();
     }
+    
+    public void saveOrUpdate(Withdraw obj) {
+    	if (obj.getId() == null) {
+			dao.insert(obj);
+		} else {
+    		dao.update(obj);
+    	}
+    }
 }
 
