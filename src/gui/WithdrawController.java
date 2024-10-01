@@ -2,6 +2,7 @@ package gui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -25,11 +26,10 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Withdraw;
-import model.services.WithdrawService;
 
 public class WithdrawController implements Initializable, DataChangeListener{
 	
-	private WithdrawService service;
+	private List<Withdraw> listaMock = new ArrayList<>();
 	
 	@FXML
 	private TableView<Withdraw> tableViewWithdraw;
@@ -48,12 +48,8 @@ public class WithdrawController implements Initializable, DataChangeListener{
 	@FXML
 	public void onBtWithdrawAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
-		Withdraw obj = new Withdraw();
+		Withdraw obj = new Withdraw(0, 0);
 		createDialogForm(obj, "/gui/WithdrawForm.fxml", parentStage);	
-	}
-	
-	public void setWithdrawService(WithdrawService service) {
-		this.service = service;
 	}
 	
 	@Override
@@ -71,41 +67,45 @@ public class WithdrawController implements Initializable, DataChangeListener{
 	}
 	
 	public void updateTableView() {
-		if (service == null) {
-			throw new IllegalStateException("Service was null");
-		}
-		List<Withdraw> list = service.findAll();
+		List<Withdraw> list = listaMock;
 		
 		obsList = FXCollections.observableArrayList(list);
 		tableViewWithdraw.setItems(obsList);
 	}
 	
 	private void createDialogForm(Withdraw obj, String absoluteName, Stage parentStage) {
-		try {
-			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
-			Pane pane = loader.load();
-			
-			WithdrawFormController controller = loader.getController();
-			controller.setWithdraw(obj);
-			controller.setWithdrawService(new WithdrawService());
-			controller.subscriveDataChangeListener(this);
-			controller.updateFormData();
-			
-			Stage dialogStage = new Stage();
-			dialogStage.setTitle("Withdraw data");
-			dialogStage.setScene(new Scene(pane));
-			dialogStage.setResizable(false);
-			dialogStage.initOwner(parentStage);
-			dialogStage.initModality(Modality.WINDOW_MODAL);
-			dialogStage.showAndWait();
-		}
-		catch (IOException e) {
-			Alerts.showAlert("IO Exception", "Error Loading View", e.getMessage(), AlertType.ERROR);
-		}
+	    try {
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+	        Pane pane = loader.load();
+
+	        WithdrawFormController controller = loader.getController();
+	        controller.setWithdrawController(this);
+	        controller.setWithdraw(obj);
+	        controller.subscriveDataChangeListener(this);
+	        controller.updateFormData();
+
+	        Stage dialogStage = new Stage();
+	        dialogStage.setTitle("Withdraw data");
+	        dialogStage.setScene(new Scene(pane));
+	        dialogStage.setResizable(false);
+	        dialogStage.initOwner(parentStage);
+	        dialogStage.initModality(Modality.WINDOW_MODAL);
+	        dialogStage.showAndWait();
+	    } catch (IOException e) {
+	        Alerts.showAlert("IO Exception", "Error Loading View", e.getMessage(), AlertType.ERROR);
+	    }
 	}
 
 	@Override
 	public void onChangeData() {
 		updateTableView();
+	}
+	public List<Withdraw> getListaMock() {
+		return listaMock;
+	}
+	
+	public List<Withdraw> setListaMock(Withdraw entity) {
+		listaMock.add(entity);
+		return listaMock;
 	}
 }
