@@ -1,65 +1,38 @@
 package model.entities;
 
-import java.io.Serializable;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
-public class Withdraw implements Serializable {
+public class Withdraw {
+    private IntegerProperty id;
+    private IntegerProperty value;
 
-	private static final long serialVersionUID = 1L;
+    public Withdraw(int id, int value) {
+        this.id = new SimpleIntegerProperty(id);
+        this.value = new SimpleIntegerProperty(value);
+    }
 
-	private Integer id;
-	private Integer value;
-	
-	public Withdraw() {
-	}
+    public int getId() {
+        return id.get();
+    }
 
-	public Withdraw(Integer id, Integer value) {
-		this.id = id;
-		this.value = value;
-	}
+    public void setId(int id) {
+        this.id.set(id);
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public IntegerProperty idProperty() {
+        return id;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public int getValue() {
+        return value.get();
+    }
 
-	public Integer getValue() {
-		return value;
-	}
+    public void setValue(int value) {
+        this.value.set(value);
+    }
 
-	public void setValue(Integer value) {
-		this.value = value;
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Withdraw other = (Withdraw) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "Withdraw [id=" + id + ", value=" + value + "]";
-	}
+    public IntegerProperty valueProperty() {
+        return value;
+    }
 }
